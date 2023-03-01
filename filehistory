@@ -1,0 +1,16 @@
+  632  cd ..
+  633  cd ..
+  634  ls
+  635  cd Applications
+  636  cd XAMPP
+  637  ls
+  638  cd htdocs
+  639  git clone https://github.com/Kubisowsky/wsb_k15.git
+  640  clear
+  641  alias c-clear
+  642  c
+  643  alias c=clear
+  644  c
+  645  history
+  646  history > filehistory
+  647  cd wsb_k15
