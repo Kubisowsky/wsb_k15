@@ -16,7 +16,7 @@ include('./skrypty/lista.php');
 @include_once('./skrypty/lista1.php');
 
 @require_once('./skrypty/lista.php');
-require('./skrypty/lista1.php');
+@require('./skrypty/lista1.php');
 
 ?>
 <h4>Koniec strony</h4>
