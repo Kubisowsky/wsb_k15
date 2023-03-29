@@ -11,7 +11,7 @@
 <?php
 require_once('../skrypty/connect.php');
 
-$sql = "SELECT firstname, lastname, city, state, birthday, YEAR(CURDATE()) as rok FROM users INNER JOIN cities on users.city_id = cities.id INNER JOIN states on cities.state_id = states.id;";
+$sql = "SELECT firstname, lastname, city, state, birthday, YEAR(CURDATE()) as rok FROM users INNER JOIN cities on users.city_id = cities.id INNER JOIN states on cities.state_id = states.id ORDER BY users.id;";
 
 
 $result = $conn->query($sql);
