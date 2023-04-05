@@ -3,6 +3,7 @@ session_start();
 ?>
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,29 +11,29 @@ session_start();
     <title>Uzytkownicy</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body>
-<?php
-if(isset($_SESSION["error"])){
-    echo $_SESSION["error"];
-    unset($_SESSION["error"]);
-}
-require_once('../skrypty/connect.php');
+    <?php
+    if (isset($_SESSION["error"])) {
+        echo $_SESSION["error"];
+        unset($_SESSION["error"]);
+    }
+    require_once('../skrypty/connect.php');
 
-$sql = "SELECT users.id, firstname, lastname, city, state, birthday, YEAR(CURDATE()) as rok FROM users INNER JOIN cities on users.city_id = cities.id INNER JOIN states on cities.state_id = states.id ORDER BY users.id;";
-$sql2 = 'SELECT id, city FROM cities';
-//echo $sql;
-$result = $conn->query($sql);
-$result2 = $conn->query($sql2);
+    $sql = "SELECT users.id, firstname, lastname, city, state, birthday, YEAR(CURDATE()) as rok FROM users INNER JOIN cities on users.city_id = cities.id INNER JOIN states on cities.state_id = states.id ORDER BY users.id;";
+    $sql2 = 'SELECT id, city FROM cities';
+    //echo $sql;
+    $result = $conn->query($sql);
+    $result2 = $conn->query($sql2);
 
-echo "<table>";
-echo "<tr><th>Imie</th><th>Nazwisko</th><th>Miasto</th><th>Województwo</th><th>Data urodzenia</th><th>Rok</th><td></td></tr>";
+    echo "<table>";
+    echo "<tr><th>Imie</th><th>Nazwisko</th><th>Miasto</th><th>Województwo</th><th>Data urodzenia</th><th>Rok</th><td></td></tr>";
 
-if(!$result || mysqli_num_rows($result) == 0){
-    echo '<tr><td colspan="7">Brak wyników</td></tr>';
-}
-else{
-    while($user = $result->fetch_array()){
-        echo <<< USER
+    if (!$result || mysqli_num_rows($result) == 0) {
+        echo '<tr><td colspan="7">Brak wyników</td></tr>';
+    } else {
+        while ($user = $result->fetch_array()) {
+            echo <<<USER
         <tr>
             <td>$user[firstname]</td>
             <td>$user[lastname]</td>
@@ -45,22 +46,21 @@ else{
         </tr>
         USER;
         }
-}
+    }
 
-echo "</table>";
-echo "<a href='4_db.php'>Miasto</a>";
+    echo "</table>";
+    echo "<a href='4_db.php'>Miasto</a>";
 
 
-if(isset($_GET['deleteUser']) != 0){
-    echo "<hr>";
-    echo "Usunięto użytkownika o id: $_GET[deleteUser]";
-}
-else{
+    if (isset($_GET['deleteUser']) != 0) {
+        echo "<hr>";
+        echo "Usunięto użytkownika o id: $_GET[deleteUser]";
+    } else {
 
-}
-//zapamietac autofocus na form
-if(isset($_GET["addUserForm"])){
-    echo <<< ADDUSERFORM
+    }
+    //zapamietac autofocus na form
+    if (isset($_GET["addUserForm"])) {
+        echo <<<ADDUSERFORM
         <hr><h4>Dodwawanie użytkownika</h4>
     
         <form action="../skrypty/add_user.php" method="post">
@@ -74,31 +74,34 @@ if(isset($_GET["addUserForm"])){
             <select id="city_id" name="city_id">
     ADDUSERFORM;
 
-    while($row = mysqli_fetch_array($result2)){
-        echo "<option value=$row[id]>$row[city]</option>";
-    }
+        while ($row = mysqli_fetch_array($result2)) {
+            echo "<option value=$row[id]>$row[city]</option>";
+        }
 
 
-    echo <<< ADDUSERFORM
-        </select><br><br>
+        echo <<<ADDUSERFORM
+        </select><br>
+        <input type="checkbox" id="regulamin" name="regulamin" value="tak">
+        <label for="regulamin"> Regulamin</label><br><br>
         <input type="submit" value="Dodaj użytkownika">
     </form>
     
     ADDUSERFORM;
-}
-else{
-echo '<br><a href="./3_db.php?addUserForm=1">Dodaj użytkownika</a>';
-}
+    } else {
+        echo '<br><a href="./3_db.php?addUserForm=1">Dodaj użytkownika</a>';
+    }
 
-if(isset($_GET["updateUserId"])){
-    $sql3 = "SELECT users.id, firstname, lastname, city, state, birthday, YEAR(CURDATE()) as rok FROM users INNER JOIN cities on users.city_id = cities.id INNER JOIN states on cities.state_id = states.id  WHERE users.id = $_GET[updateUserId] ORDER BY users.id;";
-    $result3 = mysqli_query($conn, $sql3);
-    //echo $sql3;
-    while($user = mysqli_fetch_array($result3)){
-    echo <<< UPDATEUSERFORM
+    if (isset($_GET["updateUserId"])) {
+        $sql3 = "SELECT users.id, city_id, firstname, lastname, city, state, birthday, YEAR(CURDATE()) as rok FROM users INNER JOIN cities on users.city_id = cities.id INNER JOIN states on cities.state_id = states.id  WHERE users.id = $_GET[updateUserId] ORDER BY users.id;";
+        $result3 = mysqli_query($conn, $sql3);
+        //echo $sql3;
+        while ($user = mysqli_fetch_array($result3)) {
+            $userCityId = $user['city_id'];
+            $_SESSION['userId'] = $_GET['updateUserId'];
+            echo <<<UPDATEUSERFORM
             <hr><h4>Aktualizacja użytkownika o id: $_GET[updateUserId]</h4>
-        
-            <form action="../skrypty/add_user.php" method="post">
+            
+            <form action="../skrypty/update_user.php" method="post">
                 <label for="firstname">Imie</label><br>
                 <input type="text" name="firstname" value=$user[firstname] autofocus><br>
                 <label for="lastname">Nazwisko</label><br>
@@ -109,23 +112,32 @@ if(isset($_GET["updateUserId"])){
                 <select id="city_id" name="city_id">
             UPDATEUSERFORM;
         }
-    while($row = mysqli_fetch_array($result2)){
-        echo "<option value=$row[id]>$row[city]</option>";
-    }
+        while ($row = mysqli_fetch_array($result2)) {
+            if ($row['id'] == $userCityId) {
+                echo "<option selected value=$row[id]>$row[city]</option>";
+            } else {
+                echo "<option value=$row[id]>$row[city]</option>";
+            }
+        }
 
 
-    echo <<< UPDATEUSERFORM
-        </select><br><br>
+        echo <<<UPDATEUSERFORM
+        </select><br>
+        <input type="checkbox" id="regulamin" name="regulamin" value="tak">
+        <label for="regulamin"> Regulamin</label><br><br>
         <input type="submit" value="Update użytkownik">
     </form>
     
     UPDATEUSERFORM;
-//dokonczyc update
-}
-?>
-<br>
+        //dokonczyc update
+    }
+    unset($_SESSION["userId"]);
+    $conn->close();
+    ?>
+    <br>
 
 
 
 </body>
+
 </html>

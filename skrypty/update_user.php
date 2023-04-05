@@ -12,19 +12,19 @@ foreach($_POST as $key => $value){
 }
 require_once('./connect.php');
 
-if(isset($_POST['regulamin'])   ){
+if(isset($_POST['regulamin'])){
 
-$sql = "INSERT INTO `users`(`city_id`, `firstname`, `lastname`, `birthday`) VALUES ('$_POST[city_id]','$_POST[firstname]','$_POST[lastname]','$_POST[birthday]')";
+$sql = "UPDATE `users` SET `city_id`='$_POST[city_id]',`firstname`='$_POST[firstname]',`lastname`='$_POST[lastname]',`birthday`='$_POST[birthday]' WHERE id = $_SESSION[userId]";
 echo $sql;
 $conn->query($sql);
 
 if($conn->affected_rows == 1){
     //echo "";
-    $_SESSION["error"] = "Prawidłowo dodano rekord";
+    $_SESSION["error"] = "Prawidłowo zaktualizowano rekord";
 }
 else{
     //echo "";
-    $_SESSION["error"] = "Nie dodano rekordu";
+    $_SESSION["error"] = "Nie zaktualizowano rekordu";
 }
 
 }
@@ -36,5 +36,5 @@ else{
 
 //echo $conn->affected_rows;
 
-header("Location: ../4_db/3_db.php?addUser=1");
+header("Location: ../4_db/3_db.php?updateUser=1");
 //echo $sql;
